@@ -1,7 +1,8 @@
 
 
-[Q1] What is the distribution of customers across states?*/
+## [Q1] What is the distribution of customers across states?*/
 
+``` SQL
 SELECT 
 	state, 
 	COUNT(customer_id) AS total_customers
@@ -9,12 +10,13 @@ FROM customer_t
 GROUP BY 1
 ORDER BY 2 DESC;
 
+``` 
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q2] What is the average rating in each quarter?
+## [Q2] What is the average rating in each quarter?
 
 -- Very Bad is 1, Bad is 2, Okay is 3, Good is 4, Very Good is 5.*/
-
+``` SQL
 WITH rating AS 
 (
 	SELECT
@@ -36,11 +38,12 @@ SELECT
 FROM rating
 GROUP BY 1 
 ORDER BY 1 ASC;
-
+```
 -- --------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q3] Are customers getting more dissatisfied over time?*/
+##  [Q3] Are customers getting more dissatisfied over time?*/
 
+``` SQL
 WITH cust_feed AS 
 (
 	SELECT 
@@ -66,11 +69,12 @@ WITH cust_feed AS
 	FROM cust_feed
 	GROUP BY 1
     ORDER BY 1 ASC;
-
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q4] Which are the top 5 vehicle makers preferred by the customer.*/
+## [Q4] Which are the top 5 vehicle makers preferred by the customer.*/
 
+``` SQL
 SELECT 
 	vehicle_maker AS top_vehicle_makers, 
 	COUNT(customer_id) AS total_customers
@@ -79,10 +83,11 @@ GROUP BY 1
 ORDER BY 2 DESC
 LIMIT 5;
 
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q5] What is the most preferred vehicle make in each state?*/
-
+## [Q5] What is the most preferred vehicle make in each state?*/
+``` SQL
 SELECT *
 FROM
 (
@@ -98,24 +103,26 @@ FROM
 ) AS preferred_vehicle
 WHERE ranking = 1
 ORDER BY 3 DESC;
-
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*QUESTIONS RELATED TO REVENUE and ORDERS 
+# QUESTIONS RELATED TO REVENUE and ORDERS 
 
--- [Q6] What is the trend of number of orders by quarters?*/
+## [Q6] What is the trend of number of orders by quarters?*/
 
+``` SQL
 SELECT 
 	quarter_number,
 	COUNT(order_id) AS total_orders
 FROM order_t
 GROUP BY 1
 ORDER BY 1;
-
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q7] What is the quarter over quarter % change in revenue?*/
+## [Q7] What is the quarter over quarter % change in revenue?*/
 
+``` SQL
  WITH QoQ AS 
 (
 	SELECT quarter_number, 
@@ -126,11 +133,11 @@ SELECT quarter_number, revenue,
 ROUND(LAG(revenue) OVER(ORDER BY quarter_number), 2) AS previous_revenue,
 ROUND((revenue - LAG(revenue) OVER(ORDER BY quarter_number))/LAG(revenue) OVER(ORDER BY quarter_number), 2) AS qoq_perc_change
 FROM QoQ;
-
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q8] What is the trend of revenue and orders by quarters?*/
-
+## [Q8] What is the trend of revenue and orders by quarters?*/
+``` SQL
 SELECT 
 	quarter_number,
 	ROUND(SUM(quantity*vehicle_price), 0) AS revenue,
@@ -138,13 +145,14 @@ SELECT
 FROM order_t
 GROUP BY 1
 ORDER BY 1;
-
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*QUESTIONS RELATED TO SHIPPING 
+# QUESTIONS RELATED TO SHIPPING 
 
-[Q9] What is the average discount offered for different types of credit cards?*/
+## [Q9] What is the average discount offered for different types of credit cards?*/
 
+``` SQL
 SELECT 
 	credit_card_type,
 	ROUND(AVG(discount), 2) AS average_discount
@@ -153,14 +161,15 @@ INNER JOIN customer_t t2
  ON t1.customer_id = t2.customer_id
 GROUP BY 1
 ORDER BY 2 DESC;
-
+```
 -- ---------------------------------------------------------------------------------------------------------------------------------*/
 
-/*[Q10] What is the average time taken to ship the placed orders for each quarters?*/
-
+## [Q10] What is the average time taken to ship the placed orders for each quarters?*/
+``` SQL
 SELECT 
 	quarter_number,
     ROUND(AVG(DATEDIFF(ship_date, order_date)), 0) AS average_shipping_time
 FROM order_t
 GROUP BY 1
 ORDER BY 1;
+```
